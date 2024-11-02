@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Recommendation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 1em;
+            display: block;
+            color: #555;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 0.5em;
+            margin-top: 0.5em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 1em;
+        }
+        .checkbox-group label {
+            font-weight: normal;
+            color: #333;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1em;
+            padding: 0.5em;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Get Movie Recommendations</h1>
+        <form action="/recommend" method="post">
+            <label for="mood">How do you want to feel?</label>
+            <input type="text" name="mood" id="mood" required placeholder="e.g., happy, sad, adventurous">
+
+            <label for="time_available">How much time do you have? (in minutes)</label>
+            <input type="number" name="time_available" id="time_available" required placeholder="e.g., 120">
+
+            <label>Select Streaming Services:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="streaming_services" value="Netflix"> Netflix</label>
+                <label><input type="checkbox" name="streaming_services" value="Disney+"> Disney+</label>
+                <label><input type="checkbox" name="streaming_services" value="Hulu"> Hulu</label>
+                <label><input type="checkbox" name="streaming_services" value="Amazon Prime Video"> Amazon Prime Video</label>
+                <label><input type="checkbox" name="streaming_services" value="HBO Max"> HBO Max</label>
+                <label><input type="checkbox" name="streaming_services" value="Apple TV+"> Apple TV+</label>
+                <label><input type="checkbox" name="streaming_services" value="Peacock"> Peacock+</label>
+                <label><input type="checkbox" name="streaming_services" value="Paramount+"> Paramount+</label>
+                <label><input type="checkbox" name="streaming_services" value="BBC iPlayer"> BBC iPlayer</label>
+                <label><input type="checkbox" name="streaming_services" value="ITV Hub"> ITV Hub</label>
+                <label><input type="checkbox" name="streaming_services" value="All 4"> All 4</label>
+                <!-- Add other streaming services as needed -->
+            </div>
+
+            <button type="submit">Get Recommendation</button>
+        </form>
+    </div>
+</body>
+</html>
