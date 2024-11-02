@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Recommendations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 2em;
+        }
+        .recommendations {
+            display: flex;
+            justify-content: space-between;
+            gap: 2em;
+        }
+        .option {
+            width: 45%;
+            background-color: #ffffff;
+            padding: 1em;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #007bff;
+            text-align: center;
+        }
+        p {
+            color: #555;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+        }
+        .button {
+            padding: 0.5em 1em;
+            font-size: 1em;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recommendations based on your genre</h1>
+
+        <div class="recommendations">
+            <!-- Option 1 Container -->
+            <div class="option">
+                <h2>Option 1</h2>
+                {% if recommendations[0][0] %}
+                    <p><strong>Title:</strong> {{ recommendations[0][0].title }}</p>
+                    <p><strong>Release Date:</strong> {{ recommendations[0][0].release_date }}</p>
+                    <p><strong>Rating:</strong> {{ recommendations[0][0].vote_average }}</p>
+                    <p><strong>Runtime:</strong> {{ recommendations[0][0].runtime }} minutes</p>
+                    <p><strong>Cast:</strong> {{ recommendations[0][0].cast }}</p>
+                    <p><strong>Streaming Services:</strong> {{ recommendations[0][0].streaming_services }}</p>
+                    {% if recommendations[0][0].trailer_url %}
+                        <p><a href="{{ recommendations[0][0].trailer_url }}" target="_blank">Watch Trailer</a></p>
+                    {% endif %}
+                {% else %}
+                    <p>No recommendation available for this option.</p>
+                {% endif %}
+            </div>
+
+            <!-- Option 2 Container -->
+            <div class="option">
+                <h2>Option 2</h2>
+                {% if recommendations[1][0] %}
+                    <p><strong>Title:</strong> {{ recommendations[1][0].title }}</p>
+                    <p><strong>Release Date:</strong> {{ recommendations[1][0].release_date }}</p>
+                    <p><strong>Rating:</strong> {{ recommendations[1][0].vote_average }}</p>
+                    <p><strong>Runtime:</strong> {{ recommendations[1][0].runtime }} minutes</p>
+                    <p><strong>Cast:</strong> {{ recommendations[1][0].cast }}</p>
+                    <p><strong>Streaming Services:</strong> {{ recommendations[1][0].streaming_services }}</p>
+                    {% if recommendations[1][0].trailer_url %}
+                        <p><a href="{{ recommendations[1][0].trailer_url }}" target="_blank">Watch Trailer</a></p>
+                    {% endif %}
+                {% else %}
+                    <p>No recommendation available for this option.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="buttons">
+            <!-- Back Button -->
+            <form action="/" method="get" style="display: inline;">
+                <button type="submit" class="button">Back</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
