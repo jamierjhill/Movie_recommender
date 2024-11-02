@@ -1,1 +1,127 @@
-{"nbformat":4,"nbformat_minor":0,"metadata":{"colab":{"provenance":[],"authorship_tag":"ABX9TyMAFzKC4np6614v8b8ZJDf6"},"kernelspec":{"name":"python3","display_name":"Python 3"},"language_info":{"name":"python"}},"cells":[{"cell_type":"code","execution_count":2,"metadata":{"id":"bzsPZTfTopu3","executionInfo":{"status":"ok","timestamp":1730569063520,"user_tz":0,"elapsed":254,"user":{"displayName":"Jamie Hill","userId":"10831983047187267053"}}},"outputs":[],"source":["from flask import Flask, request, render_template\n","import requests\n","import random\n","from datetime import datetime\n","\n","# Initialize Flask app with the template folder in the current directory\n","app = Flask(__name__, template_folder='templates')\n","\n","# TMDb API Key and Base URL\n","API_KEY = '067fd28c11279efc124bd66dcee5a58d'\n","BASE_URL = 'https://api.themoviedb.org/3'\n","\n","# Genre mapping for direct genre input\n","genre_mapping = {\n","    'comedy': 35,\n","    'thriller': 53,\n","    'drama': 18,\n","    'adventure': 12,\n","    'family': 10751,\n","    'horror': 27,\n","    'romance': 10749,\n","    'action': 28,\n","    'documentary': 99,\n","    'mystery': 9648,\n","    'fantasy': 14,\n","    'animation': 16,\n","    'music': 10402,\n","    'crime': 80,\n","    'science fiction': 878,\n","    'history': 36,\n","    'tv movie': 10770\n","}\n","\n","# Function to get movie details from TMDb\n","def get_movie_details(movie_id, country_code='US'):\n","    url = f\"{BASE_URL}/movie/{movie_id}\"\n","    params = {'api_key': API_KEY, 'append_to_response': 'videos,credits,watch/providers'}\n","    response = requests.get(url, params=params)\n","    if response.status_code == 200:\n","        data = response.json()\n","        trailer_url = next((f\"https://www.youtube.com/watch?v={video['key']}\" for video in data['videos']['results']\n","                            if video['type'] == 'Trailer' and video['site'] == 'YouTube'), None)\n","        cast = ', '.join([member['name'] for member in data['credits']['cast'][:5]])\n","        providers = data['watch/providers']['results'].get(country_code, {})\n","        streaming_services = ', '.join([provider['provider_name'] for provider in providers.get('flatrate', [])])\n","        return {\n","            'title': data['title'],\n","            'release_date': data.get('release_date', 'N/A'),\n","            'vote_average': data['vote_average'],\n","            'runtime': data.get('runtime', 'N/A'),\n","            'trailer_url': trailer_url,\n","            'cast': cast,\n","            'streaming_services': streaming_services or 'Not available for streaming'\n","        }\n","    return None\n","\n","# Function to get movies from TMDb API based on genre, runtime, etc.\n","def get_tmdb_movies(genre_id, min_runtime, max_runtime, language, year_min=None, year_max=None, min_rating=0):\n","    url = f\"{BASE_URL}/discover/movie\"\n","    params = {\n","        'api_key': API_KEY,\n","        'with_genres': genre_id,\n","        'with_original_language': language,\n","        'with_runtime.gte': min_runtime,\n","        'with_runtime.lte': max_runtime,\n","        'sort_by': 'popularity.desc',\n","        'vote_average.gte': min_rating,\n","        'include_adult': False,\n","    }\n","    if year_min:\n","        params['primary_release_date.gte'] = f\"{year_min}-01-01\"\n","    if year_max:\n","        params['primary_release_date.lte'] = f\"{year_max}-12-31\"\n","\n","    response = requests.get(url, params=params)\n","    if response.status_code == 200:\n","        movies = response.json().get('results', [])\n","        return [get_movie_details(movie['id']) for movie in movies if get_movie_details(movie['id']) is not None]\n","    return []\n","\n","# Define route for the homepage\n","@app.route('/')\n","def home():\n","    return render_template('recommend_input.html')\n","\n","# Define route for displaying recommendations\n","@app.route('/recommend', methods=['POST'])\n","def recommend():\n","    user_genre = request.form.get('genre').strip().lower()\n","    time_available = int(request.form.get('time_available').strip())\n","    streaming_services = request.form.getlist('streaming_services')\n","\n","    # Get genre ID directly from the input\n","    genre_id = genre_mapping.get(user_genre)\n","    if not genre_id:\n","        return \"Genre not found. Please enter a valid genre.\", 400\n","\n","    min_runtime = max(0, time_available - 20)\n","    max_runtime = time_available\n","    current_year = datetime.now().year\n","\n","    # Fetch movies based on criteria\n","    recent_movies = get_tmdb_movies(genre_id, min_runtime, max_runtime, language='en', year_min=current_year - 10, year_max=current_year)\n","    older_movies = get_tmdb_movies(genre_id, min_runtime, max_runtime, language='en', year_max=current_year - 10)\n","\n","    # Filter movies by streaming services\n","    recent_movies_filtered = [movie for movie in recent_movies if movie and any(service in movie['streaming_services'] for service in streaming_services)]\n","    older_movies_filtered = [movie for movie in older_movies if movie and any(service in movie['streaming_services'] for service in streaming_services)]\n","\n","    # Choose a random movie if available, else set to None\n","    recent_movie = random.choice(recent_movies_filtered) if recent_movies_filtered else None\n","    older_movie = random.choice(older_movies_filtered) if older_movies_filtered else None\n","\n","    recommendations = []\n","    if recent_movie:\n","        recommendations.append((recent_movie, \"Recent Movie (within last 10 years)\"))\n","    else:\n","        recommendations.append((None, \"No recent movies found matching your criteria.\"))\n","\n","    if older_movie:\n","        recommendations.append((older_movie, \"Older Movie (more than 10 years old)\"))\n","    else:\n","        recommendations.append((None, \"No older movies found matching your criteria.\"))\n","\n","    return render_template('recommendations.html', genre=user_genre.capitalize(), recommendations=recommendations)\n","\n","# PythonAnywhere will use WSGI to serve the app, so no need for app.run()\n"]}]}
+from flask import Flask, request, render_template
+import requests
+import random
+from datetime import datetime
+
+# Initialize Flask app with the template folder in the current directory
+app = Flask(__name__, template_folder='templates')
+
+# TMDb API Key and Base URL
+API_KEY = '067fd28c11279efc124bd66dcee5a58d'
+BASE_URL = 'https://api.themoviedb.org/3'
+
+# Genre mapping for direct genre input
+genre_mapping = {
+    'comedy': 35,
+    'thriller': 53,
+    'drama': 18,
+    'adventure': 12,
+    'family': 10751,
+    'horror': 27,
+    'romance': 10749,
+    'action': 28,
+    'documentary': 99,
+    'mystery': 9648,
+    'fantasy': 14,
+    'animation': 16,
+    'music': 10402,
+    'crime': 80,
+    'science fiction': 878,
+    'history': 36,
+    'tv movie': 10770
+}
+
+# Function to get movie details from TMDb
+def get_movie_details(movie_id, country_code='US'):
+    url = f"{BASE_URL}/movie/{movie_id}"
+    params = {'api_key': API_KEY, 'append_to_response': 'videos,credits,watch/providers'}
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        trailer_url = next((f"https://www.youtube.com/watch?v={video['key']}" for video in data['videos']['results']
+                            if video['type'] == 'Trailer' and video['site'] == 'YouTube'), None)
+        cast = ', '.join([member['name'] for member in data['credits']['cast'][:5]])
+        providers = data['watch/providers']['results'].get(country_code, {})
+        streaming_services = ', '.join([provider['provider_name'] for provider in providers.get('flatrate', [])])
+        return {
+            'title': data['title'],
+            'release_date': data.get('release_date', 'N/A'),
+            'vote_average': data['vote_average'],
+            'runtime': data.get('runtime', 'N/A'),
+            'trailer_url': trailer_url,
+            'cast': cast,
+            'streaming_services': streaming_services or 'Not available for streaming'
+        }
+    return None
+
+# Function to get movies from TMDb API based on genre, runtime, etc.
+def get_tmdb_movies(genre_id, min_runtime, max_runtime, language, year_min=None, year_max=None, min_rating=0):
+    url = f"{BASE_URL}/discover/movie"
+    params = {
+        'api_key': API_KEY,
+        'with_genres': genre_id,
+        'with_original_language': language,
+        'with_runtime.gte': min_runtime,
+        'with_runtime.lte': max_runtime,
+        'sort_by': 'popularity.desc',
+        'vote_average.gte': min_rating,
+        'include_adult': False,
+    }
+    if year_min:
+        params['primary_release_date.gte'] = f"{year_min}-01-01"
+    if year_max:
+        params['primary_release_date.lte'] = f"{year_max}-12-31"
+
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        movies = response.json().get('results', [])
+        return [get_movie_details(movie['id']) for movie in movies if get_movie_details(movie['id']) is not None]
+    return []
+
+# Define route for the homepage
+@app.route('/')
+def home():
+    return render_template('recommend_input.html')
+
+# Define route for displaying recommendations
+@app.route('/recommend', methods=['POST'])
+def recommend():
+    user_genre = request.form.get('genre').strip().lower()
+    time_available = int(request.form.get('time_available').strip())
+    streaming_services = request.form.getlist('streaming_services')
+
+    # Get genre ID directly from the input
+    genre_id = genre_mapping.get(user_genre)
+    if not genre_id:
+        return "Genre not found. Please enter a valid genre.", 400
+
+    min_runtime = max(0, time_available - 20)
+    max_runtime = time_available
+    current_year = datetime.now().year
+
+    # Fetch movies based on criteria
+    recent_movies = get_tmdb_movies(genre_id, min_runtime, max_runtime, language='en', year_min=current_year - 10, year_max=current_year)
+    older_movies = get_tmdb_movies(genre_id, min_runtime, max_runtime, language='en', year_max=current_year - 10)
+
+    # Filter movies by streaming services
+    recent_movies_filtered = [movie for movie in recent_movies if movie and any(service in movie['streaming_services'] for service in streaming_services)]
+    older_movies_filtered = [movie for movie in older_movies if movie and any(service in movie['streaming_services'] for service in streaming_services)]
+
+    # Choose a random movie if available, else set to None
+    recent_movie = random.choice(recent_movies_filtered) if recent_movies_filtered else None
+    older_movie = random.choice(older_movies_filtered) if older_movies_filtered else None
+
+    recommendations = []
+    if recent_movie:
+        recommendations.append((recent_movie, "Recent Movie (within last 10 years)"))
+    else:
+        recommendations.append((None, "No recent movies found matching your criteria."))
+
+    if older_movie:
+        recommendations.append((older_movie, "Older Movie (more than 10 years old)"))
+    else:
+        recommendations.append((None, "No older movies found matching your criteria."))
+
+    return render_template('recommendations.html', genre=user_genre.capitalize(), recommendations=recommendations)
+
+# PythonAnywhere will use WSGI to serve the app, so no need for app.run()
