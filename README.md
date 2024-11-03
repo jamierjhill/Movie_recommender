@@ -1,69 +1,61 @@
 # Movie Recommendation App - README
 
-## Project Overview
-This project is a movie recommendation web application, developed as my second project and my first experience working with an API. The application uses the TMDb (The Movie Database) API to recommend movies based on user preferences, including genre, runtime, and available streaming services. The app is powered by Flask, hosted via an ngrok tunnel, and provides dynamic recommendations of recent and older movies tailored to user-selected criteria.
+## What’s This App?
+Welcome to my second project and my first shot at using an API! This app recommends movies based on your mood, time, and streaming subscriptions. Built with Flask and powered by the TMDb API, it’s a quick way to get movie suggestions that actually fit what you’re looking for. The app is now online at PythonAnywhere, so you can check it out anytime without needing to set it up locally.
 
-## Features
-- **Genre Selection**: Users can choose a genre from a predefined list.
-- **Runtime Filter**: Recommendations are filtered based on the user’s available time.
-- **Streaming Services Filter**: Only shows movies available on selected streaming platforms.
-- **Recent and Older Movies**: The app recommends a recent movie (from the last 10 years) and an older movie (over 10 years old) if they match the user's criteria.
+## Key Features
+- **Pick a Genre**: Choose from a range of genres to set the mood.
+- **Set Time Limits**: Recommendations are filtered to fit the time you have available.
+- **Choose Streaming Services**: See only movies available on your selected streaming platforms.
+- **Recent & Classic Movies**: Get both recent picks (within the last 10 years) and classics (over 10 years old).
 
-## Installation and Setup
-### Prerequisites
+## Getting Started
+### Requirements
 - Python 3.x
-- Access to Google Colab or a local environment that supports Flask and ngrok
-- Basic understanding of Python and APIs
+- Some basic knowledge of Python and APIs (not a deal-breaker, though!)
 
-### Installing Dependencies
-Install the required libraries:
+### Setting Up Locally (if you want)
+Install dependencies:
 ```python
 !pip install requests
 !pip install flask
 !pip install pyngrok
 ```
 
-### Cloning the Project
-Copy the project code and adjust the paths for templates to fit your environment.
+Replace the API keys with your own:
+1. **TMDb API Key**: Update the `API_KEY` variable in the code.
+2. **ngrok Auth Token**: Add your ngrok token where needed to enable public access.
 
-### Setting Up API Keys and ngrok
-1. **TMDb API Key**: Replace the `API_KEY` variable with your own TMDb API key.
-2. **ngrok Auth Token**: Replace `ngrok.set_auth_token()` with your ngrok authentication token.
+### Project Files
+- **`app.py`**: The main code for running the app.
+- **`templates/`**: HTML templates for the input form and results display.
 
-## Project Structure
-- **`app.py`**: Main Flask application file.
-- **`templates`**: HTML templates for user inputs (`recommend_input.html`) and recommendations (`recommendations.html`).
+## How to Use It
+1. Go to the app’s homepage on PythonAnywhere.
+2. Select your genre, set the time you have for a movie, and choose your streaming platforms.
+3. Hit “Recommend” to get tailored movie suggestions!
 
-## Usage
-1. **Starting the Application**: Run `app.py` in your Python environment. The ngrok tunnel will generate a URL, providing access to your Flask app.
-2. **Using the Web App**:
-   - On the home page, select a genre, specify your available time, and choose your streaming services.
-   - Click "Recommend" to receive a list of recommended movies.
+## Behind the Scenes
+- **TMDb API**: Pulls movie details like title, release date, rating, cast, and streaming availability.
+- **Genre Mapping**: Matches genre names to TMDb genre IDs to filter movies accurately.
 
-### API Details
-- **TMDb API**: Fetches movie details, including title, release date, rating, runtime, cast, and streaming availability.
-- **Genre Mapping**: Maps user-input genres to TMDb genre IDs for accurate recommendations.
-
-### Example Workflow
-1. **User Input**:
+### Example Use
+1. **You Enter**:
    - Genre: "Comedy"
    - Time Available: 120 minutes
-   - Streaming Services: "Netflix", "Amazon Prime"
-2. **Recommendations**:
-   - A recent movie and an older movie are selected based on the criteria and displayed with relevant details like title, release date, rating, cast, and available streaming services.
+   - Streaming Services: "Netflix" and "Amazon Prime"
+2. **You Get**:
+   - A recent and an older comedy movie (both available on your selected platforms) with details on cast, runtime, and where to watch.
 
-## Code Walkthrough
-- **`get_movie_details()`**: Fetches detailed information about a movie from TMDb, including cast, runtime, and streaming options.
-- **`get_tmdb_movies()`**: Retrieves movies based on genre, runtime, and popularity. It uses additional filters for year and rating.
-- **Home and Recommendation Routes**:
-  - **Home Route (`/`)**: Displays the user input form for selecting genre, runtime, and streaming services.
-  - **Recommendation Route (`/recommend`)**: Processes user inputs, fetches matching movies, and displays them on the recommendations page.
+## Main Code Functions
+- **`get_movie_details()`**: Retrieves all the details for a specific movie, like cast, streaming options, and trailer links.
+- **`get_tmdb_movies()`**: Fetches movies based on your input for genre, runtime, and popularity.
 
-## Future Improvements
-- Add more filtering options, such as language.
-- Add TV Shows
-- Enable user account creation to save favorite recommendations.
-- Improve runtime accuracy by suggesting movies closer to the specified time.
+## Ideas for the Future
+- Add more language options.
+- Add TV shows to the mix.
+- Add account creation so users can save recommendations.
+- Fine-tune movie lengths to match exact time limits.
 
-## Acknowledgments
-Cheers to the TMDb API for providing access to  movie data and to ngrok for allowing easy tunneling for local development.
+## Thanks!
+Shoutout to the TMDb API for the movie data and to ngrok for making remote access easy during development. Enjoy, and happy movie-watching!
