@@ -57,7 +57,8 @@
         }
         .buttons {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            gap: 1em;
         }
         .button {
             padding: 0.5em 1em;
@@ -75,7 +76,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Recommendations based on your genre</h1>
+        <h1>Recommendations based on your genre: {{ genre }}</h1>
 
         <div class="recommendations">
             <!-- Option 1 Container -->
