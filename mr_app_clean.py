@@ -7,7 +7,7 @@ from datetime import datetime
 app = Flask(__name__, template_folder='templates')
 
 # TMDb API Key and Base URL
-API_KEY = '067fd28c11279efc124bd66dcee5a58d'
+API_KEY = ''
 BASE_URL = 'https://api.themoviedb.org/3'
 
 # Genre mapping for direct genre input
