@@ -14,12 +14,12 @@ import os
 app = Flask(__name__, template_folder='/content/drive/MyDrive/Colab Notebooks/movie_recommender/templates')  # Adjust the path as necessary
 
 # Set ngrok auth token
-ngrok.set_auth_token("2o4pfmzyiwmBZcY4vhwQiYsOiJS_FsuQB2nueaQ863GcU2ya")
+ngrok.set_auth_token("")
 public_url = ngrok.connect(5000)  # Establish ngrok connection
 print("Ngrok tunnel URL:", public_url)
 
 # TMDb API Key and Base URL
-API_KEY = '067fd28c11279efc124bd66dcee5a58d'
+API_KEY = ''
 BASE_URL = 'https://api.themoviedb.org/3'
 
 # Genre mapping for direct genre input
