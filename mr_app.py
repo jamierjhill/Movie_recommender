@@ -11,11 +11,11 @@ from datetime import datetime
 import os
 
 # Initialize Flask app
-app = Flask(__name__, template_folder='/content/drive/MyDrive/Colab Notebooks/movie_recommender/templates')  # Adjust the path as necessary
+app = Flask(__name__, template_folder='/content/drive/MyDrive/Colab Notebooks/movie_recommender/templates')  
 
 # Set ngrok auth token
 ngrok.set_auth_token("")
-public_url = ngrok.connect(5000)  # Establish ngrok connection
+public_url = ngrok.connect(5000)  
 print("Ngrok tunnel URL:", public_url)
 
 # TMDb API Key and Base URL
